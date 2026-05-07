@@ -16,7 +16,7 @@ This project demonstrates a complete production-style AWS 3-tier architecture de
 The project allows users to submit their name and email through a frontend application, store the data in an RDS MySQL database, and dynamically fetch/display users using a Flask backend API.
 
 ---
-
+![AWS 3-Tier Architecture Workflow](https://raw.githubusercontent.com/avinashpandey404/aws-3tier-project/main/aws-3%20tier%20archiiture%20workflow.png)
 # 🏗️ Architecture Diagram
 
 ```text
