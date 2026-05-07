@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 40px;
+}
+
+/* MAIN BOX */
+.container {
+    max-width: 600px;
+    background: white;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* HEADINGS */
+h1,
+h2 {
+    text-align: center;
+}
+
+/* FORM */
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* INPUT BOXES */
+input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* BUTTON */
+button {
+    padding: 10px 20px;
+    background: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* USER LIST */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* USER ITEM */
+li {
+    background: #eeeeee;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
