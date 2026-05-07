@@ -1,17 +1,17 @@
 # 🚀 AWS 3-Tier Architecture Project
 
-## 📌 Project Overview
+# 📌 Project Overview
 
 This project demonstrates a complete production-style AWS 3-tier architecture deployment using:
 
-- Amazon S3
-- CloudFront CDN
-- EC2 Ubuntu Server
-- Flask REST API
-- Amazon RDS MySQL
-- IAM Roles & Policies
-- CloudWatch Monitoring
-- Git & GitHub
+* Amazon S3
+* CloudFront CDN
+* EC2 Ubuntu Server
+* Flask REST API
+* Amazon RDS MySQL
+* IAM Roles & Policies
+* CloudWatch Monitoring
+* Git & GitHub
 
 The project allows users to submit their name and email through a frontend application, store the data in an RDS MySQL database, and dynamically fetch/display users using a Flask backend API.
 
@@ -35,16 +35,16 @@ RDS MySQL Database
 
 # 📌 AWS Services Used
 
-| Service | Purpose |
-|---|---|
-| S3 | Frontend hosting |
-| CloudFront | CDN + HTTPS delivery |
-| EC2 | Flask backend hosting |
-| RDS MySQL | Database |
-| IAM | Secure permissions |
-| CloudWatch | Monitoring & alarms |
-| Security Groups | Firewall rules |
-| GitHub | Version control |
+| Service         | Purpose               |
+| --------------- | --------------------- |
+| S3              | Frontend hosting      |
+| CloudFront      | CDN + HTTPS delivery  |
+| EC2             | Flask backend hosting |
+| RDS MySQL       | Database              |
+| IAM             | Secure permissions    |
+| CloudWatch      | Monitoring & alarms   |
+| Security Groups | Firewall rules        |
+| GitHub          | Version control       |
 
 ---
 
@@ -89,13 +89,13 @@ Frontend dynamically updates user list
 
 ## EC2 Configuration
 
-| Setting | Value |
-|---|---|
-| AMI | Ubuntu |
-| Instance Type | t3.micro / t2.micro |
-| Storage | 8 GB |
-| Key Pair | Created new key pair |
-| Security Group | Custom SG |
+| Setting        | Value                |
+| -------------- | -------------------- |
+| AMI            | Ubuntu               |
+| Instance Type  | t2.micro             |
+| Storage        | 8 GB                 |
+| Key Pair       | Created new key pair |
+| Security Group | Custom SG            |
 
 ---
 
@@ -103,16 +103,10 @@ Frontend dynamically updates user list
 
 ## Inbound Rules
 
-| Type | Port | Source |
-|---|---|---|
-| SSH | 22 | My IP |
+| Type       | Port | Source   |
+| ---------- | ---- | -------- |
+| SSH        | 22   | My IP    |
 | Custom TCP | 5000 | Anywhere |
-
-## Outbound Rules
-
-| Type | Port | Destination |
-|---|---|---|
-| All Traffic | All | 0.0.0.0/0 |
 
 ---
 
@@ -134,15 +128,11 @@ ssh: connect to host xx.xx.xx.xx port 22: Software caused connection abort
 
 ## Root Cause
 
-- SSH port 22 was not allowed in Security Group inbound rules.
+SSH port 22 was not allowed in Security Group.
 
 ## Fix
 
-Added:
-
-| Type | Port | Source |
-|---|---|---|
-| SSH | 22 | My IP |
+Added inbound SSH rule.
 
 ---
 
@@ -151,31 +141,6 @@ Added:
 ```bash
 sudo apt update
 sudo apt upgrade -y
-```
-
----
-
-# ❌ ISSUE FACED — APT Repository Connection Error
-
-## Error
-
-```text
-Unable to connect to eu-north-1.ec2.archive.ubuntu.com
-```
-
-## Root Cause
-
-- EC2 outbound internet access issue
-- Incorrect networking setup in old EC2 instance
-
-## Fix
-
-- Deleted broken EC2
-- Created fresh EC2 instance
-- Verified outbound rule:
-
-```text
-All Traffic → 0.0.0.0/0
 ```
 
 ---
@@ -197,7 +162,7 @@ cd flask-app
 
 ---
 
-# 🔥 STEP 6 — Create Python Virtual Environment
+# 🔥 STEP 6 — Create Virtual Environment
 
 ```bash
 python3 -m venv venv
@@ -206,7 +171,7 @@ source venv/bin/activate
 
 ---
 
-# 🔥 STEP 7 — Install Python Packages
+# 🔥 STEP 7 — Install Required Packages
 
 ```bash
 pip install flask flask-cors mysql-connector-python
@@ -214,7 +179,7 @@ pip install flask flask-cors mysql-connector-python
 
 ---
 
-# 🔥 STEP 8 — Create Flask App
+# 🔥 STEP 8 — Create Flask Backend
 
 ```bash
 nano app.py
@@ -222,7 +187,7 @@ nano app.py
 
 ---
 
-# ❌ ISSUE FACED — Mistaken Terminal Input
+# ❌ ISSUE FACED — Typed Python Code in Terminal
 
 ## Error
 
@@ -233,17 +198,11 @@ Command 'db_config' not found
 
 ## Root Cause
 
-Python code was typed directly into Linux terminal instead of inside app.py.
+Python code typed directly into Linux terminal.
 
 ## Fix
 
-Opened:
-
-```bash
-nano app.py
-```
-
-and pasted code inside the file.
+Opened app.py and pasted code inside file.
 
 ---
 
@@ -255,13 +214,7 @@ python3 app.py
 
 ---
 
-# 🔥 STEP 10 — Open Flask API in Browser
-
-```text
-http://EC2-PUBLIC-IP:5000
-```
-
-## Output
+# 🎉 Flask API Output
 
 ```json
 {
@@ -271,43 +224,36 @@ http://EC2-PUBLIC-IP:5000
 
 ---
 
-# 🔥 STEP 11 — Create RDS MySQL Database
+# 🔥 STEP 10 — Create Amazon RDS MySQL Database
 
 ## RDS Configuration
 
-| Setting | Value |
-|---|---|
-| Engine | MySQL |
-| Deployment | Free Tier |
-| Public Access | Yes |
-| DB Instance Identifier | database-2 |
-| Username | admin |
-| Password | Custom password |
+| Setting       | Value      |
+| ------------- | ---------- |
+| Engine        | MySQL      |
+| Template      | Free Tier  |
+| Public Access | Yes        |
+| DB Identifier | database-2 |
+| Username      | admin      |
 
 ---
 
 # ❌ ISSUE FACED — Security Group Not Showing
 
-## Problem
-
-Could not see EC2 Security Group while configuring RDS.
-
 ## Root Cause
 
-Wrong VPC selection / old deleted resources.
+RDS and EC2 were not properly aligned in same VPC.
 
 ## Fix
 
-Created fresh RDS in same VPC as EC2.
+Created fresh RDS inside same VPC.
 
 ---
 
-# 🔥 STEP 12 — Configure RDS Security Group
+# 🔥 STEP 11 — Configure RDS Security Group
 
-## Inbound Rules
-
-| Type | Port | Source |
-|---|---|---|
+| Type         | Port | Source             |
+| ------------ | ---- | ------------------ |
 | MySQL/Aurora | 3306 | EC2 Security Group |
 
 ---
@@ -322,11 +268,48 @@ Can't connect to MySQL server on port 3306
 
 ## Root Cause
 
-RDS inbound rule missing.
+MySQL inbound rule missing.
 
 ## Fix
 
-Allowed MySQL port 3306 from EC2 Security Group.
+Allowed port 3306 from EC2 SG.
+
+---
+
+# 🔥 STEP 12 — Install MySQL Client
+
+```bash
+sudo apt install mysql-client -y
+```
+
+---
+
+# ❌ ISSUE FACED — SSL Error
+
+## Error
+
+```text
+TLS/SSL error: self-signed certificate
+```
+
+## Fix
+
+Used:
+
+```python
+"ssl_disabled": True
+```
+
+inside Flask database config.
+
+---
+
+# 🔥 STEP 13 — Create Database
+
+```sql
+CREATE DATABASE flaskdb;
+SHOW DATABASES;
+```
 
 ---
 
@@ -340,83 +323,30 @@ Unknown database 'database-2'
 
 ## Root Cause
 
-`database-2` is RDS instance name, NOT actual MySQL database name.
+`database-2` was RDS instance name, not actual database name.
 
 ## Fix
 
-Created actual MySQL database manually.
-
----
-
-# 🔥 STEP 13 — Install MySQL Client
-
-```bash
-sudo apt install mysql-client -y
-```
-
----
-
-# ❌ ISSUE FACED — Package Not Available
-
-## Error
-
-```text
-Package mysql-client-core-8.0 is not available
-```
-
-## Fix
-
-Installed:
-
-```bash
-sudo apt install mysql-client -y
-```
-
----
-
-# 🔥 STEP 14 — Connect to RDS
-
-```bash
-mysql -h RDS-ENDPOINT -u admin -p
-```
-
----
-
-# ❌ ISSUE FACED — SSL Error
-
-## Error
-
-```text
-TLS/SSL error: self-signed certificate
-```
-
-## Root Cause
-
-MySQL client SSL mismatch.
-
-## Fix
-
-Used SSL disabled configuration inside Flask app.
-
----
-
-# 🔥 STEP 15 — Create Database
-
-Inside MySQL:
+Created real MySQL database:
 
 ```sql
 CREATE DATABASE flaskdb;
-SHOW DATABASES;
-EXIT;
 ```
 
 ---
 
-# 🔥 STEP 16 — Configure Flask Database Connection
-
-## app.py Database Config
+# 🔥 STEP 14 — Final Backend app.py
 
 ```python
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import mysql.connector
+
+app = Flask(__name__)
+CORS(app)
+
+# Database configuration
+
 db_config = {
     "host": "RDS-ENDPOINT",
     "user": "admin",
@@ -424,83 +354,524 @@ db_config = {
     "database": "flaskdb",
     "ssl_disabled": True
 }
+
+# Database connection function
+
+def get_db_connection():
+    return mysql.connector.connect(**db_config)
+
+# Create table
+
+def create_table():
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100),
+            email VARCHAR(100)
+        )
+    """)
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+@app.route('/')
+def home():
+    return jsonify({"message": "Flask + RDS API is running successfully!"})
+
+@app.route('/users', methods=['GET'])
+def get_users():
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM users")
+
+    users = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
+    return jsonify(users)
+
+@app.route('/users', methods=['POST'])
+def add_user():
+
+    data = request.get_json()
+
+    name = data['name']
+    email = data['email']
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "INSERT INTO users (name, email) VALUES (%s, %s)",
+        (name, email)
+    )
+
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return jsonify({"message": "User added successfully"})
+
+if __name__ == '__main__':
+    create_table()
+    app.run(host='0.0.0.0', port=5000)
 ```
 
 ---
 
-# ❌ ISSUE FACED — Access Denied to mysql Database
+# 🔍 Backend Code Explanation
 
-## Error
+## Flask
+
+```python
+from flask import Flask
+```
+
+Used to create REST API server.
+
+---
+
+# WHY FLASK?
+
+Benefits:
+
+✅ lightweight
+✅ beginner friendly
+✅ API focused
+
+---
+
+## request
+
+Used to receive frontend data.
+
+---
+
+## jsonify
+
+Converts Python dictionary into JSON response.
+
+---
+
+## CORS
+
+```python
+from flask_cors import CORS
+```
+
+Allows frontend and backend communication.
+
+---
+
+# WHY CORS?
+
+Frontend:
 
 ```text
-Access denied for user 'admin' to database 'mysql'
+CloudFront/S3
 ```
 
-## Root Cause
+Backend:
 
-Attempted to use AWS system database.
+```text
+EC2 IP
+```
 
-## Fix
+Different origins.
 
-Created custom database:
+Without CORS:
+
+❌ browser blocks requests.
+
+---
+
+## mysql.connector
+
+Connects Python with MySQL database.
+
+---
+
+## app = Flask(**name**)
+
+Creates Flask application.
+
+---
+
+## Database Config
+
+Stores:
+
+* RDS endpoint
+* username
+* password
+* database name
+
+---
+
+## ssl_disabled
+
+Used because MySQL SSL mismatch issue occurred.
+
+---
+
+## get_db_connection()
+
+Reusable database connection function.
+
+---
+
+## create_table()
+
+Automatically creates table if not exists.
+
+---
+
+## SQL Query
 
 ```sql
-CREATE DATABASE flaskdb;
+CREATE TABLE IF NOT EXISTS users
 ```
 
-and updated Flask config.
+Creates users table.
 
 ---
 
-# 🔥 STEP 17 — Final Flask API Features
+## PRIMARY KEY
 
-## Features
+```sql
+id INT AUTO_INCREMENT PRIMARY KEY
+```
 
-- Add User
-- Fetch Users
-- Store Data in RDS
-- REST API
-- JSON Responses
+Automatically creates unique ID.
 
 ---
 
-# 🔥 STEP 18 — Frontend Development
+## @app.route
+
+Defines API endpoints.
+
+---
+
+## GET Method
+
+Used for fetching data.
+
+---
+
+## POST Method
+
+Used for sending data.
+
+---
+
+## request.get_json()
+
+Reads frontend JSON data.
+
+---
+
+## SQL INSERT
+
+```sql
+INSERT INTO users
+```
+
+Stores data into RDS database.
+
+---
+
+## connection.commit()
+
+Saves data permanently.
+
+Without commit:
+
+❌ data not saved.
+
+---
+
+## connection.close()
+
+Closes database connection.
+
+---
+
+# WHY CLOSE CONNECTIONS?
+
+Avoids:
+
+❌ memory leaks
+❌ too many DB connections
+
+---
+
+## app.run()
+
+Starts Flask server.
+
+---
+
+## host='0.0.0.0'
+
+Allows public access.
+
+Without this:
+
+❌ accessible only inside EC2.
+
+---
+
+# 🔥 STEP 15 — Frontend Development
 
 ## Frontend Files
 
-- index.html
-- style.css
-- script.js
-
----
-
-# 🔥 STEP 19 — Configure Frontend API URL
-
-Inside script.js:
-
-```javascript
-const API_URL = "http://EC2-PUBLIC-IP:5000";
+```text
+index.html
+style.css
+script.js
 ```
 
 ---
 
-# 🔥 STEP 20 — Upload Frontend to S3
+# 📄 index.html
 
-## S3 Configuration
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AWS 3-Tier Architecture Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-| Setting | Value |
-|---|---|
-| Static Website Hosting | Enabled |
-| Public Access | Enabled |
+<h1>AWS 3-Tier Architecture Project</h1>
 
-Uploaded:
-- index.html
-- style.css
-- script.js
+<input type="text" id="name" placeholder="Enter Name">
+<input type="email" id="email" placeholder="Enter Email">
+
+<button onclick="addUser()">Add User</button>
+
+<h2>Users List</h2>
+
+<ul id="users"></ul>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+```
 
 ---
 
-# 🔥 STEP 21 — Enable Bucket Policy
+# 🔍 Frontend Code Explanation
+
+## Input Fields
+
+Used to take user input.
+
+---
+
+## id="name"
+
+Allows JavaScript to access input field.
+
+---
+
+## Button
+
+```html
+<button onclick="addUser()">
+```
+
+Runs JavaScript function.
+
+---
+
+## Users List
+
+```html
+<ul id="users"></ul>
+```
+
+Dynamic container where user data appears.
+
+---
+
+# 🎨 style.css
+
+```css
+body {
+    font-family: Arial;
+    margin: 40px;
+}
+
+input {
+    padding: 10px;
+    margin: 5px;
+}
+
+button {
+    padding: 10px 20px;
+}
+```
+
+---
+
+# 🔍 CSS Explanation
+
+## font-family
+
+Changes webpage font.
+
+---
+
+## margin
+
+Adds outer spacing.
+
+---
+
+## padding
+
+Adds inner spacing.
+
+---
+
+# ⚙️ script.js
+
+```javascript
+const API_URL = "http://EC2-PUBLIC-IP:5000";
+
+async function getUsers() {
+
+    const response = await fetch(`${API_URL}/users`);
+
+    const users = await response.json();
+
+    const usersList = document.getElementById("users");
+
+    usersList.innerHTML = "";
+
+    users.forEach(user => {
+
+        const li = document.createElement("li");
+
+        li.textContent = `${user.name} - ${user.email}`;
+
+        usersList.appendChild(li);
+    });
+}
+
+async function addUser() {
+
+    const name = document.getElementById("name").value;
+
+    const email = document.getElementById("email").value;
+
+    await fetch(`${API_URL}/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email })
+    });
+
+    getUsers();
+}
+
+getUsers();
+```
+
+---
+
+# 🔍 JavaScript Explanation
+
+## API_URL
+
+Stores Flask backend URL.
+
+---
+
+## async function
+
+Allows waiting for API response.
+
+---
+
+## fetch()
+
+Makes HTTP request.
+
+Flow:
+
+```text
+Frontend → Flask API
+```
+
+---
+
+## response.json()
+
+Converts API response into JavaScript object.
+
+---
+
+## JSON.stringify()
+
+Converts JavaScript object into JSON format.
+
+---
+
+# WHY JSON?
+
+Industry-standard API format.
+
+---
+
+# 🔄 COMPLETE DATA FLOW
+
+```text
+User enters form
+      ↓
+JavaScript sends POST request
+      ↓
+Flask API receives request
+      ↓
+Flask inserts data into RDS
+      ↓
+Flask returns JSON response
+      ↓
+Frontend updates user list
+```
+
+---
+
+# 🔥 STEP 16 — Upload Frontend to S3
+
+## S3 Configuration
+
+| Setting                | Value   |
+| ---------------------- | ------- |
+| Static Website Hosting | Enabled |
+| Public Access          | Enabled |
+
+Uploaded:
+
+* index.html
+* style.css
+* script.js
+
+---
+
+# 🔥 STEP 17 — Bucket Policy
 
 ```json
 {
@@ -519,27 +890,15 @@ Uploaded:
 
 ---
 
-# 🎉 FRONTEND OUTPUT
-
-```text
-AWS 3-Tier Architecture Project
-Enter Name
-Enter Email
-Add User
-Users List
-```
-
----
-
-# 🔥 STEP 22 — Configure CloudFront CDN
+# 🔥 STEP 18 — Configure CloudFront
 
 ## CloudFront Settings
 
-| Setting | Value |
-|---|---|
-| Origin | S3 Bucket |
-| Viewer Protocol | Redirect HTTP to HTTPS |
-| Default Root Object | index.html |
+| Setting             | Value                  |
+| ------------------- | ---------------------- |
+| Origin              | S3 Bucket              |
+| Viewer Protocol     | Redirect HTTP to HTTPS |
+| Default Root Object | index.html             |
 
 ---
 
@@ -547,7 +906,7 @@ Users List
 
 ## Root Cause
 
-`index.html` not configured as default root object.
+index.html not configured.
 
 ## Fix
 
@@ -557,112 +916,41 @@ Added:
 index.html
 ```
 
-inside CloudFront settings.
+as default root object.
 
 ---
 
-# 🎉 FINAL WORKING FLOW
+# 🔥 STEP 19 — CloudWatch Monitoring
 
-```text
-User
-   ↓
-CloudFront
-   ↓
-S3 Frontend
-   ↓
-Flask API on EC2
-   ↓
-RDS MySQL
-```
+Configured:
+
+* CPU monitoring
+* EC2 metrics
+* alarms
 
 ---
 
-# 🎉 FINAL OUTPUT
+# 🔥 STEP 20 — IAM Role & Policies
 
-```text
-Avinash - avinash@test.com
-```
-
----
-
-# 🔥 STEP 23 — CloudWatch Monitoring
-
-## Configured
-
-- CPU Monitoring
-- EC2 Metrics
-- CloudWatch Alarm
-
----
-
-# CloudWatch Alarm
-
-| Metric | Threshold |
-|---|---|
-| CPUUtilization | >70% |
-
----
-
-# 🔥 STEP 24 — IAM Role & Policies
-
-## Created IAM Role
+Created IAM Role:
 
 ```text
 EC2-CloudWatch-Role
 ```
 
-## Attached Policies
+Attached policies:
 
-- CloudWatchAgentServerPolicy
-- Custom-S3-Read-Policy
-
----
-
-# 🔥 Custom IAM Policy
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "S3ReadOnlyAccess",
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetObject",
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::*"
-      ]
-    }
-  ]
-}
-```
+* CloudWatchAgentServerPolicy
+* Custom-S3-Read-Policy
 
 ---
 
-# 🔥 STEP 25 — Git & GitHub Setup
-
-## Initialize Git
+# 🔥 STEP 21 — GitHub Setup
 
 ```bash
 git init
-```
-
----
-
-## Add Files
-
-```bash
 git add .
-```
-
----
-
-## Commit
-
-```bash
-git commit -m "Initial commit - AWS 3 tier architecture"
+git commit -m "Initial commit"
 ```
 
 ---
@@ -673,7 +961,6 @@ git commit -m "Initial commit - AWS 3 tier architecture"
 
 ```text
 Invalid username or token
-Password authentication is not supported
 ```
 
 ## Root Cause
@@ -682,74 +969,137 @@ GitHub no longer supports password authentication.
 
 ## Fix
 
-Created GitHub Personal Access Token (PAT) and used token instead of password.
+Used GitHub Personal Access Token (PAT).
 
 ---
 
-# 🎯 Key Learnings
+# ☁️ AWS SERVICES EXPLANATION
 
-## AWS Skills
+# Amazon S3
 
-- EC2 deployment
-- RDS connectivity
-- S3 hosting
-- CloudFront CDN
-- CloudWatch monitoring
-- IAM roles & policies
-- Security Groups
-- Networking basics
+Used for frontend hosting.
 
----
+Benefits:
 
-## DevOps Skills
-
-- Git & GitHub
-- Linux commands
-- Flask deployment
-- REST API development
-- Debugging production issues
+✅ cheap
+✅ scalable
+✅ highly available
 
 ---
 
-# 🔥 Challenges Solved
+# CloudFront
 
-| Problem | Solution |
-|---|---|
-| SSH failed | Fixed SG inbound rule |
-| Apt repository failed | Recreated EC2 |
-| RDS timeout | Opened port 3306 |
-| Unknown database | Created actual DB |
-| GitHub auth failed | Used PAT token |
-| CloudFront access denied | Added index.html |
-| SSL issue | Disabled SSL in Flask |
+AWS CDN service.
+
+Benefits:
+
+✅ HTTPS
+✅ caching
+✅ faster loading
+
+---
+
+# Amazon EC2
+
+Virtual Linux server.
+
+Runs Flask backend.
+
+---
+
+# Amazon RDS
+
+Managed MySQL database service.
+
+Benefits:
+
+✅ backups
+✅ maintenance
+✅ scalability
+
+---
+
+# Security Groups
+
+Acts like firewall.
+
+| Port | Purpose   |
+| ---- | --------- |
+| 22   | SSH       |
+| 5000 | Flask API |
+| 3306 | MySQL     |
+
+---
+
+# IAM Role
+
+Provides secure AWS permissions.
+
+Avoids hardcoded credentials.
+
+---
+
+# CloudWatch
+
+Used for:
+
+* monitoring
+* metrics
+* alarms
 
 ---
 
 # 🚀 Future Improvements
 
-- Application Load Balancer (ALB)
-- Auto Scaling Group
-- Multi-AZ RDS
-- Bastion Host
-- Private Subnets
-- NAT Gateway
-- Docker
-- Terraform
-- CI/CD Pipeline
-- Kubernetes
+* Application Load Balancer (ALB)
+* Auto Scaling Group
+* Bastion Host
+* Multi-AZ RDS
+* Private Subnets
+* NAT Gateway
+* Docker
+* Terraform
+* CI/CD Pipeline
+* Kubernetes
 
 ---
 
 # 🧠 Interview Questions Covered
 
-- What is 3-tier architecture?
-- Why use CloudFront?
-- Why use RDS?
-- Difference between public/private subnet?
-- What are Security Groups?
-- Why IAM Roles?
-- How frontend communicates with backend?
-- What challenges did you face?
+* What is 3-tier architecture?
+* Why use CloudFront?
+* Why use RDS?
+* What are Security Groups?
+* Why IAM Roles?
+* How frontend communicates with backend?
+* What issues did you face?
+* How did you troubleshoot AWS networking?
+
+---
+
+# 🏆 Final Skills Learned
+
+## AWS Skills
+
+* EC2
+* RDS
+* S3
+* CloudFront
+* IAM
+* CloudWatch
+* Networking
+
+---
+
+## DevOps Skills
+
+* Git
+* GitHub
+* Linux
+* Flask deployment
+* REST APIs
+* Debugging
+* Security Groups
 
 ---
 
@@ -763,4 +1113,4 @@ AWS | DevOps | Cloud Computing | Python Flask
 
 # ⭐ Final Result
 
-Successfully built and deployed a complete production-style AWS 3-tier architecture application using AWS cloud services and DevOps best practices.
+Successfully built and deployed a complete AWS 3-tier architecture project using frontend hosting, backend APIs, RDS database, monitoring, IAM security, GitHub integration, and real-world cloud troubleshooting.
